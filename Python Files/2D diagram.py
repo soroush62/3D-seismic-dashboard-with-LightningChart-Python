@@ -223,11 +223,11 @@ def plot_slice_lc(data, slice_index, axis=0):
     heatmap.hide_wireframe()
 
     custom_palette = [
-        {"value": np.nanmin(slice_data), "color": lc.Color(68, 1, 84)},
-        {"value": np.percentile(slice_data, 25), "color": lc.Color(58, 82, 139)},
-        {"value": np.percentile(slice_data, 50), "color": lc.Color(32, 144, 140)},
-        {"value": np.percentile(slice_data, 75), "color": lc.Color(94, 201, 98)},
-        {"value": np.nanmax(slice_data), "color": lc.Color(253, 231, 37)}
+        {"value": np.nanmin(slice_data), "color": lc.Color(0, 0, 255)},       # Blue for lower values
+        {"value": np.nanpercentile(slice_data, 25), "color": lc.Color(0, 255, 255)},  # Cyan for lower mid values
+        {"value": np.nanmedian(slice_data), "color": lc.Color(0, 255, 0)},   # Green for median values
+        {"value": np.nanpercentile(slice_data, 75), "color": lc.Color(255, 255, 0)},  # Yellow for upper mid values
+        {"value": np.nanmax(slice_data), "color": lc.Color(255, 0, 0)}       # Red for higher values
     ]
 
     heatmap.set_palette_colors(
