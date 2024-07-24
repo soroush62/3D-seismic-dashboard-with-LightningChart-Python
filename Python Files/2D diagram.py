@@ -172,21 +172,24 @@
 
 
 
-
-
 import numpy as np
 import lightningchart as lc
+import pandas as pd
+from scipy.interpolate import griddata
 
-# Read the license key from a file
 with open('D:/Computer Aplication/WorkPlacement/Projects/shared_variable.txt', 'r') as f:
     mylicensekey = f.read().strip()
 lc.set_license(mylicensekey)
 
 file_path = 'D:/Computer Aplication/WorkPlacement/Projects/Project6/Dataset/data_train.npz'
 data = np.load(file_path)
+
 array_3d = data['data']
 
-# Function to plot a 2D slice using LightningChart
+# Print the shape of the array
+print("Shape of the array:", array_3d.shape)
+
+# Function to plot a 2D slice with LightningChart
 def plot_slice_lc(data, slice_index, axis=0):
     if axis == 0:
         slice_data = data[slice_index, :, :]
@@ -195,60 +198,48 @@ def plot_slice_lc(data, slice_index, axis=0):
     elif axis == 2:
         slice_data = data[:, :, slice_index]
     
-    # Replace zero values with NaN
+    # Filter out the zero intensity areas
+    slice_data = slice_data.astype(float)  # Convert to float to handle NaN properly
     slice_data[slice_data == 0] = np.nan
     
-    # Convert slice_data to a JSON serializable format
-    slice_data = slice_data.astype(np.float64)
-    
-    # Initialize a chart
     chart = lc.ChartXY(
         title=f'2D Slice along axis {axis} at index {slice_index}',
         theme=lc.Themes.Dark
     )
-    
-    # Create HeatmapGridSeries
+
+    grid_size_x, grid_size_y = slice_data.shape
     heatmap = chart.add_heatmap_grid_series(
-        columns=slice_data.shape[1],
-        rows=slice_data.shape[0],
+        columns=grid_size_x,
+        rows=grid_size_y,
     )
-    
-    # Set start and end coordinates
+
     heatmap.set_start(x=0, y=0)
-    heatmap.set_end(x=slice_data.shape[1], y=slice_data.shape[0])
-    
-    # Set step size
+    heatmap.set_end(x=grid_size_x, y=grid_size_y)
+
     heatmap.set_step(x=1, y=1)
-    
-    # Enable intensity interpolation
     heatmap.set_intensity_interpolation(True)
-    
-    # Invalidate intensity values
     heatmap.invalidate_intensity_values(slice_data.tolist())
-    
-    # Hide wireframe
+
     heatmap.hide_wireframe()
-    
-    # Define custom palette to match Matplotlib's 'viridis'
+
     custom_palette = [
         {"value": np.nanmin(slice_data), "color": lc.Color(68, 1, 84)},
-        {"value": np.nanpercentile(slice_data, 25), "color": lc.Color(58, 82, 139)},
-        {"value": np.nanpercentile(slice_data, 50), "color": lc.Color(32, 144, 140)},
-        {"value": np.nanpercentile(slice_data, 75), "color": lc.Color(94, 201, 98)},
+        {"value": np.percentile(slice_data, 25), "color": lc.Color(58, 82, 139)},
+        {"value": np.percentile(slice_data, 50), "color": lc.Color(32, 144, 140)},
+        {"value": np.percentile(slice_data, 75), "color": lc.Color(94, 201, 98)},
         {"value": np.nanmax(slice_data), "color": lc.Color(253, 231, 37)}
     ]
-    
+
     heatmap.set_palette_colors(
         steps=custom_palette,
         look_up_property='value',
         interpolate=True
     )
-    
-    # Set axis titles
+
     chart.get_default_x_axis().set_title('X-axis')
     chart.get_default_y_axis().set_title('Y-axis')
-    
-    # Open the chart
+    chart.add_legend(data=heatmap)
+
     chart.open()
 
 # Plot a slice from each axis
