@@ -215,13 +215,13 @@ This 3D surface plot represents a slice of the seismic data along axis 0 at inde
 
 This plot visualizes a 3D surface slice along axis 1 at index 55. It uses the same color scheme to depict intensity variations, with a clear representation of the seismic data's topographical changes across the X and Z dimensions. This visualization is particularly useful for examining the continuity and disruptions within geological layers.
 
-![](Images/3D-Surface-Plot-of-Slice-along-axis-1-at-index-55.gif)
+![](Images/3D-Surface-Plot-of-Slice-along-axis-1-at-index-55.png)
 
 ##### 3D Surface Plot of Slice along axis 2 at index 55
 
 The final 3D surface plot shows a slice along axis 2 at index 55. It highlights the subsurface structure with a detailed elevation and intensity mapping. The 3D plot makes it possible to observe the geological features' depth and distribution, providing valuable insights into the subsurface's composition and potential resource locations.
 
-![](Images/3D-Surface-Plot-of-Slice-along-axis-2-at-index-55.gif)
+![](Images/3D-Surface-Plot-of-Slice-along-axis-2-at-index-55.png)
 
 
 ## Conclusion
