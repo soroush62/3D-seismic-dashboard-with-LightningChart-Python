@@ -151,8 +151,12 @@ The third heatmap presents a slice along axis 2 at index 50. This visualization 
 ![](Images/2D-Slice-along-axis-2-at-index-50.png)
 
 #### 3D Surface Plot
+
+In this section, we use LightningChart Python to create a 3D dashboard of seismic data slices and arrange multiple charts in a grid layout. Here, three slices (one from each axis) are plotted on the dashboard, providing a comprehensive view of the seismic data from different perspectives.
+
 ```python
-def plot_slice_lc(data, slice_index, axis=0):
+dashboard = lc.Dashboard(rows=1,columns=3,theme=lc.Themes.Dark)
+def plot_slice_lc(dashboard, data, slice_index, axis, column_index, row_index):
     if axis == 0:
         slice_data = data[slice_index, :, :]
     elif axis == 1:
@@ -163,15 +167,13 @@ def plot_slice_lc(data, slice_index, axis=0):
     slice_data[slice_data == 0] = np.nan
     slice_data = slice_data.astype(float)
 
-    chart = lc.Chart3D(
-        theme=lc.Themes.White,
-        title=f'3D Surface Plot of Slice along axis {axis} at index {slice_index}'
-    )
+    chart = dashboard.Chart3D(
+        title=f'3D Surface Plot of Slice along axis {axis} at index {slice_index}',
+        column_index=column_index,
+        row_index=row_index)
+    
     grid_size_x, grid_size_y = slice_data.shape
-    surface_series = chart.add_surface_grid_series(
-        columns=grid_size_x,
-        rows=grid_size_y,
-    )
+    surface_series = chart.add_surface_grid_series(columns=grid_size_x, rows=grid_size_y,)
 
     surface_series.set_start(x=0, z=0)
     surface_series.set_end(x=grid_size_x, z=grid_size_y)
@@ -183,27 +185,29 @@ def plot_slice_lc(data, slice_index, axis=0):
 
     surface_series.set_palette_colors(
         steps=[
-            {"value": np.nanmin(slice_data), "color": lc.Color(0, 0, 255)},
-            {"value": np.nanpercentile(slice_data, 25), "color": lc.Color(0, 255, 255)},
-            {"value": np.nanmedian(slice_data), "color": lc.Color(0, 255, 0)},
-            {"value": np.nanpercentile(slice_data, 75), "color": lc.Color(255, 255, 0)},
-            {"value": np.nanmax(slice_data), "color": lc.Color(255, 0, 0)}
-        ],
-        look_up_property='value',
-        percentage_values=False
-    )
+            {"value": np.nanmin(slice_data), "color": lc.Color(0, 0, 255)},       # Blue for lower values
+            {"value": np.nanpercentile(slice_data, 25), "color": lc.Color(0, 255, 255)},  # Cyan for lower mid values
+            {"value": np.nanmedian(slice_data), "color": lc.Color(0, 255, 0)},   # Green for median values
+            {"value": np.nanpercentile(slice_data, 75), "color": lc.Color(255, 255, 0)},  # Yellow for upper mid values
+            {"value": np.nanmax(slice_data), "color": lc.Color(255, 0, 0)}       # Red for higher values
+        ],look_up_property='value',percentage_values=False)
+
+    surface_series.invalidate_intensity_values(slice_data.tolist())
 
     chart.get_default_x_axis().set_title('X')
     chart.get_default_y_axis().set_title('Intensity')
     chart.get_default_z_axis().set_title('Y')
     chart.add_legend(data=surface_series)
-    chart.open()
 
-# Plot a slice from each axis
-plot_slice_lc(array_3d, slice_index=55, axis=0)
-plot_slice_lc(array_3d, slice_index=55, axis=1)
-plot_slice_lc(array_3d, slice_index=55, axis=2)
+plot_slice_lc(dashboard, array_3d, slice_index=55, axis=0, column_index=0, row_index=0)
+plot_slice_lc(dashboard, array_3d, slice_index=55, axis=1, column_index=1, row_index=0)
+plot_slice_lc(dashboard, array_3d, slice_index=55, axis=2, column_index=2, row_index=0)
+dashboard.open()
 ```
+
+![](Images/Dashboard.png)
+
+#### To gain better insight into each diagram in dashboard, let’s investigate them separately:
 
 ##### 3D Surface Plot of Slice along axis 0 at index 55
 
@@ -244,9 +248,7 @@ The library's user-friendly API and comprehensive documentation make it easy to 
 LightningChart's advanced features, such as intensity interpolation and custom color mapping, enhance the analytical capabilities of the visualizations. These features allow for more precise representation of data variations, enabling detailed analysis and more accurate interpretations. The ability to highlight specific ranges of data values helps in focusing on areas of interest within the dataset.
 
 ### Integration with Python Ecosystem
-As a Python library, LightningChart seamlessly integrates with other scientific computing tools and libraries, such as NumPy and SciPy. This compatibility allows for efficient data preprocessing, analysis, and visualization within a unified environment. The ease of integration acceler
-
-ates the workflow and enhances productivity, making it a preferred choice for data scientists and researchers.
+As a Python library, LightningChart seamlessly integrates with other scientific computing tools and libraries, such as NumPy and SciPy. This compatibility allows for efficient data preprocessing, analysis, and visualization within a unified environment. The ease of integration accelerates the workflow and enhances productivity, making it a preferred choice for data scientists and researchers.
 
 ### Professional Quality Visuals
 LightningChart produces high-quality, publication-ready visualizations that are suitable for professional presentations and reports. The clarity and precision of the charts ensure that the visualizations can effectively convey complex information, supporting decision-making processes in various fields.
