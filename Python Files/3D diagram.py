@@ -23,7 +23,7 @@ def plot_slice_lc(data, slice_index, axis=0):
 
     # Initialize a 3D chart
     chart = lc.Chart3D(
-        theme=lc.Themes.White,
+        theme=lc.Themes.Dark,
         title=f'3D Surface Plot of Slice along axis {axis} at index {slice_index}'
     )
     grid_size_x, grid_size_y = slice_data.shape
