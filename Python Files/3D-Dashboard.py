@@ -2,13 +2,9 @@ import numpy as np
 import lightningchart as lc
 from scipy.interpolate import griddata
 
-# Read the license key from a file
-with open('D:/Computer Aplication/WorkPlacement/Projects/shared_variable.txt', 'r') as f:
-    mylicensekey = f.read().strip()
-lc.set_license(mylicensekey)
+lc.set_license('my-license-key')
 
-# Load data from the .npz file
-file_path = 'D:/Computer Aplication/WorkPlacement/Projects/Project6/Dataset/data_train.npz'
+file_path = 'data_train.npz'
 data = np.load(file_path)
 array_3d = data['data']
 
@@ -83,5 +79,4 @@ plot_slice_lc(dashboard, array_3d, slice_index=55, axis=0, column_index=0, row_i
 plot_slice_lc(dashboard, array_3d, slice_index=55, axis=1, column_index=1, row_index=0)
 plot_slice_lc(dashboard, array_3d, slice_index=55, axis=2, column_index=2, row_index=0)
 
-# Open the dashboard
 dashboard.open()
